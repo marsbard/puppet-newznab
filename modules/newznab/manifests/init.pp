@@ -19,5 +19,19 @@ class newznab {
 		],
 	}
 		
+	file { "/var/www":
+		source => "/tmp/$dlName/www",
+		recurse => true,
+		ensure => "present",
+	}
 
+	/*
+	 * From newznab installer:
+	 *
+	 * The template cache folder must be writable. A quick solution is to run:
+	 * chmod 777 /var/www/lib/smarty/templates_c
+	 */
+	file { "/var/www/lib/smarty/templates_c":
+		mode => "a+rwx",
+	}
 }
