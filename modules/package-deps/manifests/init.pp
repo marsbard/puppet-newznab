@@ -1,6 +1,7 @@
 class package-deps {
 	
     	$packages = [ 
+		"unzip",
  	] 
     
 	$rmpackages = [ 
