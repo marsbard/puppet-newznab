@@ -1,4 +1,4 @@
-class "newznab" {
+class newznab {
 
 	$dlName="newznab-0.2.3.zip"
 	$dlUrl="http://www.newznab.com/${dlName}"
