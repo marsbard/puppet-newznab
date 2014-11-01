@@ -2,6 +2,7 @@ class package-deps {
 	
     	$packages = [ 
 		"unzip",
+		"libapache2-mod-php5",
  	] 
     
 	$rmpackages = [ 
