@@ -3,6 +3,10 @@ class package-deps {
     	$packages = [ 
 		"unzip",
 		"libapache2-mod-php5",
+		"php5-gd",
+		"php-pear",
+		"mysql-server",
+		"mysql-client",
  	] 
     
 	$rmpackages = [ 
