@@ -8,5 +8,5 @@ class { "package-deps":
         stage => first,
 }
 
-
+include "php"
 include "newznab"
