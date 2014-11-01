@@ -3,6 +3,8 @@
 
 Vagrant.configure("2") do |config|
 
+  # avoid vbguest auto update since it breaks the vboxfs stuff
+  config.vbguest.auto_update = false
 
   config.vm.box = "precise64"
 
