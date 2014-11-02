@@ -17,9 +17,9 @@ class package-deps {
 
 
         case $operatingsystem {
-                centos: { $updateCommand = "yum update" }
+                centos: { $updateCommand = "yum -y update" }
                 # Note that these matches are case-insensitive.
-                redhat : { $updateCommand = "yum update" }
+                redhat : { $updateCommand = "yum -y update" }
                 debian: { $updateCommand = "apt-get update" }
                 ubuntu: { $updateCommand = "apt-get update" }
                 default: { fail("Unrecognized operating system") }
