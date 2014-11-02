@@ -4,6 +4,19 @@ class newznab {
 	$dlFileName="${dlName}.zip"
 	$dlUrl="http://www.newznab.com/${dlFileName}"
 
+
+	case $operatingsystem {
+      		centos: { $webDir = "/var/www/html" }
+      		# Note that these matches are case-insensitive.
+      		redhat : { $webDir = "/var/www/html" }
+      		debian: { $webDir = "/var/www" }
+      		ubuntu: { $webDir = "/var/www" }
+      		default: { fail("Unrecognized operating system for webserver") }
+    	}
+	
+	$installDir = "${webDir}/newznab"
+
+
 	exec{ "get-newznab":
 		command => "/usr/bin/wget $dlUrl",
 		cwd => "/tmp",
@@ -18,20 +31,67 @@ class newznab {
 			Exec["get-newznab"],
 		],
 	}
+
+	file { "${webDir}/db":
+		ensure => "directory",
+		source => "/tmp/$dlName/db",
+		recurse => true,
+		require => File["${installDir}"],
+	}
+
 		
-	file { "/var/www":
+	file { "${installDir}":
 		source => "/tmp/$dlName/www",
 		recurse => true,
-		ensure => "present",
+		ensure => "directory",
+		require => [
+			Exec["unpack-newznab"],
+		],
 	}
 
 	/*
 	 * From newznab installer:
 	 *
 	 * The template cache folder must be writable. A quick solution is to run:
-	 * chmod 777 /var/www/lib/smarty/templates_c
+	 * chmod 777 ${installDir}/lib/smarty/templates_c
 	 */
-	file { "/var/www/lib/smarty/templates_c":
-		mode => "a+rwx",
+	file { "${installDir}/lib/smarty/templates_c":
+		ensure => "directory",
+		mode => "777",
+		require => [
+			File["${installDir}"],
+		],
 	}
+
+	file { "/tmp/setperms.sh":
+		ensure => "present",
+		mode => "777",
+		content => "PATH=/bin:/usr/bin\nchmod a+rwx ${installDir}/{,covers/movies,covers/music,install}",
+		require => [
+			File["${installDir}"],
+		],
+	}
+
+	file { "${installDir}/index.html":
+		ensure => "absent",
+		require => [ 
+			File["${installDir}"],
+		],
+	}
+
+	exec { "/tmp/setperms.sh":
+		command => "/bin/bash /tmp/setperms.sh",
+		path => "/bin:/usr/bin",
+		logoutput => "on_failure",
+		require => [
+			File["/tmp/setperms.sh"],
+		],
+	}
+
+	exec { "/usr/sbin/a2enmod rewrite":
+		require => Package["apache2"],
+		notify => Service["apache2"],
+	}
+	
+
 }

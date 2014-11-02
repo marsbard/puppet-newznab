@@ -1,8 +1,11 @@
 class package-deps {
 	
     	$packages = [ 
+		"apache2",
 		"unzip",
 		"libapache2-mod-php5",
+		"php5-mysql",
+		"php5-curl",
 		"php5-gd",
 		"php-pear",
 		"mysql-server",
@@ -15,6 +18,7 @@ class package-deps {
     	package { $packages:
         	ensure => "present", 
         	require => Exec["apt-get update"],
+		notify => Service["apache2"],
     	}
 
 	package { $rmpackages:

@@ -10,5 +10,7 @@ class php {
 		ensure => "present",
 	}
 
-
+	service { "apache2": 
+		ensure => "running",
+	}
 }
