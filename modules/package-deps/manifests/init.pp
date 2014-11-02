@@ -1,6 +1,6 @@
 class package-deps {
 	
-    	$packages = [ 
+    	$debpackages = [ 
 		"apache2",
 		"unzip",
 		"libapache2-mod-php5",
@@ -11,17 +11,34 @@ class package-deps {
 		"mysql-server",
 		"mysql-client",
  	] 
+
+	$rhpackages = [
+		"unzip",
+		"httpd", "php", "mysql-server", "mysql", "memcached", "php-mysql",
+		"php-gd", "php-pear", "mod_ssl", "php-curl", "php-process",
+	]
  
 	$rmpackages = [ 
 	]
 
 
         case $operatingsystem {
-                centos: { $updateCommand = "yum -y update" }
-                # Note that these matches are case-insensitive.
-                redhat : { $updateCommand = "yum -y update" }
-                debian: { $updateCommand = "apt-get update" }
-                ubuntu: { $updateCommand = "apt-get update" }
+                centos: { 
+			$updateCommand = "yum -y update" 
+			$packages = $rhpackages
+		}
+                redhat : { 
+			$updateCommand = "yum -y update" 
+			$packages = $rhpackages
+		}
+                debian: { 
+			$updateCommand = "apt-get update" 
+			$packages = $debpackages
+		}
+                ubuntu: { 
+			$updateCommand = "apt-get update" 
+			$packages = $debpackages
+		}
                 default: { fail("Unrecognized operating system") }
         }
    
