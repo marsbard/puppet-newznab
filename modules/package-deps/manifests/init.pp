@@ -11,13 +11,23 @@ class package-deps {
 		"mysql-server",
 		"mysql-client",
  	] 
-    
+ 
 	$rmpackages = [ 
 	]
 
+
+        case $operatingsystem {
+                centos: { $updateCommand = "yum update" }
+                # Note that these matches are case-insensitive.
+                redhat : { $updateCommand = "yum update" }
+                debian: { $updateCommand = "apt-get update" }
+                ubuntu: { $updateCommand = "apt-get update" }
+                default: { fail("Unrecognized operating system") }
+        }
+   
     	package { $packages:
         	ensure => "present", 
-        	require => Exec["apt-get update"],
+        	require => Exec["update-pkglist"],
 		notify => Service["apache2"],
     	}
 
@@ -33,8 +43,11 @@ class package-deps {
 	#	timeout => 0,
 	#}
 
-    	exec { "apt-get update":
+    	exec { "update-pkglist":
+		command => "${updateCommand}",
 		path => "/bin:/usr/bin",
 	}
+
+
 
 }
