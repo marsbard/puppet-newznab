@@ -1,22 +1,37 @@
 class php {
+	include "php::$operatingsystem"
+}
 
-        case $operatingsystem {
-                centos: {
-                        $apache = "httpd"
-                }
-                # Note that these matches are case-insensitive.
-                redhat : {
-                        $apache = "httpd"
-                }
-                debian: {
-                        $apache = "apache2"
-                }
-                ubuntu: {
-                        $apache = "apache2"
-                }
-                default: { fail("Unrecognized operating system for webserver") }
-        }
 
+class php::common {
+
+}
+
+class php::centos inherits php::common {
+	service { "httpd":
+		ensure => "running",
+		require => [
+			File["/etc/php.ini"],
+		],
+	}	
+
+	file { "/etc/php.ini":
+		source => "puppet:///modules/php/etc-php5-apache2-php.ini",
+		ensure => "present",
+	}
+
+}
+
+class php::redhat inherits php::centos {}
+
+class php::debian inherits php::common {
+	service { "apache2":
+		ensure => "running",
+		require => [
+			File["/etc/php5/apache2/php.ini"],
+			File["/etc/php5/cli/php.ini"],
+		],
+	}	
 
 	file { "/etc/php5/apache2/php.ini":
 		source => "puppet:///modules/php/etc-php5-apache2-php.ini",
@@ -28,8 +43,6 @@ class php {
 		ensure => "present",
 	}
 
-
-	service { "$apache": 
-		ensure => "running",
-	}
 }
+
+class php::ubuntu inherits php::debian {}

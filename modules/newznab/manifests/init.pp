@@ -1,4 +1,9 @@
+
 class newznab {
+	include "newznab::$operatingsystem"
+}
+
+class newznab::common {
 
 	$dlName="newznab-0.2.3"
 	$dlFileName="${dlName}.zip"
@@ -108,10 +113,22 @@ class newznab {
 		],
 	}
 
+
+}
+
+class newznab::ubuntu inherits newznab::common {
+
 	exec { "/usr/sbin/a2enmod rewrite":
 		require => Package["${apache}"],
 		notify => Service["${apache}"],
 	}
 	
+}
+
+
+class newznab::centos inherits newznab::common {
+
+	# rewrite should be loaded already
 
 }
+
