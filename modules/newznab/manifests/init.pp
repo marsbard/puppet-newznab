@@ -4,13 +4,33 @@ class newznab {
 	$dlFileName="${dlName}.zip"
 	$dlUrl="http://www.newznab.com/${dlFileName}"
 
+        case $operatingsystem {
+                centos: {
+                        $apache = "httpd"
+                }
+                redhat : {
+                        $apache = "httpd"
+                }
+                debian: {
+                        $apache = "apache2"
+                }
+                ubuntu: {
+                        $apache = "apache2"
+                }
+                default: { fail("Unrecognized operating system for webserver") }
+        }
+
 
 	case $operatingsystem {
-      		centos: { $webDir = "/var/www/html" }
-      		# Note that these matches are case-insensitive.
-      		redhat : { $webDir = "/var/www/html" }
-      		debian: { $webDir = "/var/www" }
-      		ubuntu: { $webDir = "/var/www" }
+      		centos: { 
+			$webDir = "/var/www/html" 
+		}
+      		redhat : { $webDir = "/var/www/html" 
+		}
+      		debian: { $webDir = "/var/www" 
+		}
+      		ubuntu: { $webDir = "/var/www" 
+		}
       		default: { fail("Unrecognized operating system for webserver") }
     	}
 	
@@ -89,8 +109,8 @@ class newznab {
 	}
 
 	exec { "/usr/sbin/a2enmod rewrite":
-		require => Package["apache2"],
-		notify => Service["apache2"],
+		require => Package["${apache}"],
+		notify => Service["${apache}"],
 	}
 	
 

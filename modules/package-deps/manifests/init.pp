@@ -15,11 +15,28 @@ class package-deps {
 	$rhpackages = [
 		"unzip",
 		"httpd", "php", "mysql-server", "mysql", "memcached", "php-mysql",
-		"php-gd", "php-pear", "mod_ssl", "php-curl", "php-process",
+		"php-gd", "php-pear", "mod_ssl", "curl", "php-process",
+		"wget",
 	]
  
 	$rmpackages = [ 
 	]
+
+        case $operatingsystem {
+                centos: {
+                        $apache = "httpd"
+                }
+                redhat : {
+                        $apache = "httpd"
+                }
+                debian: {
+                        $apache = "apache2"
+                }
+                ubuntu: {
+                        $apache = "apache2"
+                }
+                default: { fail("Unrecognized operating system for webserver") }
+        }
 
 
         case $operatingsystem {
@@ -45,7 +62,7 @@ class package-deps {
     	package { $packages:
         	ensure => "present", 
         	require => Exec["update-pkglist"],
-		notify => Service["apache2"],
+		notify => Service["$apache"],
     	}
 
 	package { $rmpackages:

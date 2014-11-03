@@ -8,5 +8,13 @@ class { "package-deps":
         stage => first,
 }
 
+
+stage { 'last':
+	require => Stage['main'],
+}
+class { "php":
+	stage => last,
+}
+
 include "php"
 include "newznab"
